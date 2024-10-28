@@ -1,0 +1,19 @@
+@use "./styles/partials/_variables.sass" as *;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  margin: $spacing-0;
+  padding: $spacing-0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: inria-sans, sans-serif;
+  height: 100%;
+  background-color: $primary-dark;
+}
