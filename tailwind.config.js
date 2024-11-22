@@ -12,6 +12,8 @@ export default {
         "primary-light": "#EFD9B4",
         "primary-dark": "#3B454D",
         "chess-dark": "#494949",
+        "sender-chat": "#A99890",
+        "receiver-chat": "#585550",
       },
     },
   },
