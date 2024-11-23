@@ -1,50 +1,42 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import { createContext, ReactNode, useEffect } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
 
-const WebSocketContext = createContext({
-  sendMessage: (message: string) => {},
-});
+interface WsCtx {
+  sendJsonMessage: SendJsonMessage;
+  lastJsonMessage: any;
+  readyState: ReadyState;
+}
 
-export const useWebSocket = () => useContext(WebSocketContext);
+const WebSocketContext = createContext<WsCtx | null>(null);
 
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const WS_URL = "ws://localhost:4444/ws";
+  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    WS_URL,
+    {
+      share: false,
+      shouldReconnect: () => true,
+      onOpen: (e) => {
+        console.log("opened....");
+        sendJsonMessage({
+          type: 0,
+          payload: {
+            hello: "world",
+          },
+        });
+      },
+    },
+  );
 
   useEffect(() => {
-    const connect = () => {
-      const ws = new WebSocket("ws://localhost:4444/ws");
-
-      ws.on = ("connect", () => console.log("connected"));
-
-      ws.onclose = (event) => {
-        console.log("Socket Closed Connection: ", event);
-      };
-
-      ws.onerror = (error) => console.error("Socket Error: ", error);
-
-      setSocket(ws);
-    };
-
-    connect();
-
-    return () => {
-      if (socket) socket.close();
-    };
-  }, []);
-
-  const sendMessage = (message: string) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(message);
-    }
-  };
+    console.log(lastJsonMessage);
+  }, [lastJsonMessage]);
 
   return (
-    <WebSocketContext.Provider value={{ sendMessage }}>
+    <WebSocketContext.Provider
+      value={{ sendJsonMessage, lastJsonMessage, readyState }}
+    >
       {children}
     </WebSocketContext.Provider>
   );
