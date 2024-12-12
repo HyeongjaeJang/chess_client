@@ -19,7 +19,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
       share: false,
       shouldReconnect: () => true,
       onOpen: (e) => {
-        console.log("opened....");
+        console.log("opened....", e);
       },
     },
   );
@@ -36,5 +36,3 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     </WebSocketContext.Provider>
   );
 };
-
-export default WebSocketProvider;

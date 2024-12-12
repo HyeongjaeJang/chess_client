@@ -16,18 +16,36 @@ const Home = () => {
   useEffect(() => {
     const user = localStorage.getItem("chessId");
     setName(user);
-    console.log(lastJsonMessage);
-  }, [lastJsonMessage]);
+  }, []);
+
+  useEffect(() => {
+    const handleWebSocketMessage = () => {
+      const message = lastJsonMessage?.payload?.message;
+      if (message?.includes("Match found:")) {
+        setTimeout(() => {
+          navigate("/game");
+        }, 2000);
+      } else if (message?.includes("Match Not Found")) {
+        setFind(false);
+        alert("Match Not Found");
+      }
+    };
+
+    handleWebSocketMessage();
+  }, [lastJsonMessage, navigate]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e.currentTarget.elements[0]);
     const input = e.currentTarget.elements[0] as HTMLInputElement;
-    console.log(input.value);
-    if (input.value !== "") {
+    if (input.value.trim() !== "") {
       localStorage.setItem("chessId", input.value);
       setName(input.value);
     }
+  };
+
+  const matching = () => {
+    setFind(true);
+    FindMatchHandler(sendJsonMessage);
   };
 
   return (
@@ -59,10 +77,7 @@ const Home = () => {
           ) : (
             <>
               <p className="text-white text-4xl lg:pl-10 mb-10">Hi {name}</p>
-              <Button
-                onClick={() => FindMatchHandler(sendJsonMessage)}
-                children="Play Chess Online"
-              />
+              <Button onClick={() => matching()} children="Play Chess Online" />
             </>
           )}
         </form>
