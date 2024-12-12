@@ -29,7 +29,7 @@ const Home = () => {
   return (
     <>
       {find && <Connect />}
-      <div className="md:container md:mx-auto flex flex-grow justify-center items-center mt-14 flex-col lg:flex-row">
+      <div className="md:container md:mx-auto flex flex-grow justify-center items-center mt-16 flex-col lg:flex-row">
         <div className="flex w-full lg:w-2/4 px-5 lg:pl-10 relative">
           <LottieAnimation pieceType="pawn" />
           <img src={chessboard} alt="chessboard" className="w-full" />

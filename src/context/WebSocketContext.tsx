@@ -4,7 +4,7 @@ import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
 
 interface WsCtx {
   sendJsonMessage: SendJsonMessage;
-  lastJsonMessage: any;
+  lastJsonMessage: { type: number; payload: JSON } | null;
   readyState: ReadyState;
 }
 
@@ -19,12 +19,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
       shouldReconnect: () => true,
       onOpen: (e) => {
         console.log("opened....");
-        sendJsonMessage({
-          type: 0,
-          payload: {
-            hello: "world",
-          },
-        });
       },
     },
   );
