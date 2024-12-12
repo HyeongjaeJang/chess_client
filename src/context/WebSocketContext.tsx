@@ -1,14 +1,15 @@
 import { createContext, ReactNode, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
+import { EventPayloadType } from "../types";
 
 interface WsCtx {
   sendJsonMessage: SendJsonMessage;
-  lastJsonMessage: { type: number; payload: JSON } | null;
+  lastJsonMessage: EventPayloadType | null;
   readyState: ReadyState;
 }
 
-const WebSocketContext = createContext<WsCtx | null>(null);
+export const WebSocketContext = createContext<WsCtx | null>(null);
 
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   const WS_URL = "ws://localhost:4444/ws";

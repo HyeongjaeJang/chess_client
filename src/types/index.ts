@@ -1,5 +1,5 @@
 export enum eventTypes {
-  sendMessage = 0,
+  SendMessage = 0,
   FindMatch = 1,
   MatchInfo = 2,
   RematchReq = 3,
@@ -7,3 +7,8 @@ export enum eventTypes {
   Resign = 5,
   MakeMove = 6,
 }
+
+export type EventPayloadType = {
+  type: eventTypes;
+  payload: JSON;
+};

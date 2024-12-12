@@ -1,19 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import LottieAnimation from "../components/LottieAnimation";
 import chessboard from "../assets/chessboard.svg";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Connect from "../components/Connect";
+import { FindMatchHandler } from "../ws";
+import { WebSocketContext } from "../context/WebSocketContext";
 
 const Home = () => {
   const navigate = useNavigate();
   const [name, setName] = useState<string | null>(null);
   const [find, setFind] = useState<boolean>(false);
+  const { sendJsonMessage, lastJsonMessage } = useContext(WebSocketContext)!;
 
   useEffect(() => {
     const user = localStorage.getItem("chessId");
     setName(user);
-  }, []);
+    console.log(lastJsonMessage);
+  }, [lastJsonMessage]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,12 +60,7 @@ const Home = () => {
             <>
               <p className="text-white text-4xl lg:pl-10 mb-10">Hi {name}</p>
               <Button
-                onClick={(): void => {
-                  setFind(true);
-                  setTimeout(() => {
-                    navigate("/game");
-                  }, 5000);
-                }}
+                onClick={() => FindMatchHandler(sendJsonMessage)}
                 children="Play Chess Online"
               />
             </>
