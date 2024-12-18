@@ -9,3 +9,14 @@ export const FindMatchHandler = (sender: SendJsonMessage) => {
 
   console.log("sending find match event...");
 };
+
+export const MoveHandler = (sender: SendJsonMessage, direction: string) => {
+  console.log(direction);
+  sender({
+    type: eventTypes.MakeMove,
+    payload: {
+      move: direction,
+    },
+  } as EventPayloadType);
+  console.log("sending move event...");
+};

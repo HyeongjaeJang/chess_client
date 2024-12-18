@@ -8,7 +8,16 @@ export enum eventTypes {
   MakeMove = 6,
 }
 
-export type EventPayloadType = {
-  type: eventTypes;
-  payload: JSON;
-};
+interface SendMessage {
+  message: string;
+}
+
+interface MakeMove {
+  move: string;
+  moves: string[];
+}
+
+export type EventPayloadType =
+  | { type: eventTypes.SendMessage; payload: SendMessage }
+  | { type: eventTypes.MakeMove; payload: MakeMove }
+  | { type: eventTypes.FindMatch; payload: JSON };
