@@ -28,7 +28,6 @@ const Chessboard: React.FC<ChessboardProps> = ({ board, socket, color }) => {
       const move = to;
 
       socket(move);
-      console.log(from, to, move);
       setFrom(null);
       setTo(null);
     }

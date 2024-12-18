@@ -13,11 +13,14 @@ interface SendMessage {
 }
 
 interface MakeMove {
-  move: string;
   moves: string[];
+}
+
+interface FindMatch {
+  detail: JSON;
 }
 
 export type EventPayloadType =
   | { type: eventTypes.SendMessage; payload: SendMessage }
   | { type: eventTypes.MakeMove; payload: MakeMove }
-  | { type: eventTypes.FindMatch; payload: JSON };
+  | { type: eventTypes.FindMatch; payload: FindMatch };

@@ -15,16 +15,28 @@ const Game = () => {
   const [color, setColor] = useState<string>("");
 
   useEffect(() => {
-    if (lastJsonMessage) {
-      if (!lastJsonMessage.payload.message) {
-        const move = lastJsonMessage.payload.moves;
-        if (move) {
-          const to = move[move.length - 1].split("");
-          chess.move(to[2] + to[3]);
+    if (
+      !lastJsonMessage ||
+      typeof lastJsonMessage !== "object" ||
+      !("payload" in lastJsonMessage)
+    )
+      return;
+
+    if ("moves" in lastJsonMessage.payload) {
+      const moves = lastJsonMessage.payload.moves;
+      if (moves && moves.length > 0) {
+        const move = moves[moves.length - 1];
+        const result = chess.move(move[2] + move[3]);
+        if (result) {
           setBoard(chess.board());
           setMoves((prevMoves) => [...prevMoves, move]);
         }
-      } else if (lastJsonMessage.payload.message.includes("Color:")) {
+      }
+    } else if (
+      "message" in lastJsonMessage.payload &&
+      typeof lastJsonMessage.payload.message === "string"
+    ) {
+      if (lastJsonMessage.payload.message.includes("Color:")) {
         setColor(lastJsonMessage.payload.message.split(":")[2].trim());
       }
     }
