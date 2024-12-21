@@ -13,6 +13,7 @@ interface SendMessage {
 }
 
 interface MakeMove {
+  move: string;
   moves: string[];
 }
 

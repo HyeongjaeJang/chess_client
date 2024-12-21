@@ -13,6 +13,7 @@ const Game = () => {
   const { sendJsonMessage, lastJsonMessage } = useContext(WebSocketContext)!;
   const [moves, setMoves] = useState<string[]>([]);
   const [color, setColor] = useState<string>("");
+  const [type, setType] = useState<string | null>(null);
 
   useEffect(() => {
     if (
@@ -26,10 +27,20 @@ const Game = () => {
       const moves = lastJsonMessage.payload.moves;
       if (moves && moves.length > 0) {
         const move = moves[moves.length - 1];
-        const result = chess.move(move[2] + move[3]);
-        if (result) {
-          setBoard(chess.board());
-          setMoves((prevMoves) => [...prevMoves, move]);
+        const sq = move[2] + move[3];
+        if (type) {
+          const result = chess.move(type?.toUpperCase() + sq);
+          if (result) {
+            setBoard(chess.board());
+            setMoves((prevMoves) => [...prevMoves, move]);
+            setType(null);
+          }
+        } else {
+          const result = chess.move(sq);
+          if (result) {
+            setBoard(chess.board());
+            setMoves((prevMoves) => [...prevMoves, move]);
+          }
         }
       }
     } else if (
@@ -51,7 +62,13 @@ const Game = () => {
       <div className="pt-8 max-w-screen-lg w-full">
         <div className="grid grid-cols-6 gap-4 w-full">
           <div className="col-span-4 w-full">
-            <Chessboard board={board} socket={moveing} color={color} />
+            <Chessboard
+              board={board}
+              socket={moveing}
+              color={color}
+              type={type}
+              setType={setType}
+            />
           </div>
           <div className="col-span-2 w-full bg-zinc-700 rounded-xl lg:p-8">
             <Button

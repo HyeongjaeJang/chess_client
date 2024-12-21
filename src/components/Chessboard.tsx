@@ -1,13 +1,27 @@
 import { useState, useEffect } from "react";
 import { Square, PieceSymbol, Color } from "chess.js";
 
-interface ChessboardProps {
-  board: ({ square: Square; type: PieceSymbol; color: Color } | null)[][];
-  socket: (direction: string) => void;
-  color: string;
+interface ChessSquare {
+  square: Square;
+  type: PieceSymbol;
+  color: Color;
 }
 
-const Chessboard: React.FC<ChessboardProps> = ({ board, socket, color }) => {
+interface ChessboardProps {
+  board: (ChessSquare | null)[][];
+  socket: (move: string) => void;
+  color: string;
+  type?: string | null;
+  setType: (type: string | null) => void;
+}
+
+const Chessboard: React.FC<ChessboardProps> = ({
+  board,
+  socket,
+  color,
+  type,
+  setType,
+}) => {
   const [from, setFrom] = useState<Square | null>(null);
   const [to, setTo] = useState<Square | null>(null);
 
@@ -15,23 +29,36 @@ const Chessboard: React.FC<ChessboardProps> = ({ board, socket, color }) => {
     return `${color}${type.toUpperCase()}.svg`;
   };
 
-  const handleSquareClick = (square: Square | null) => {
+  const handleSquareClick = (
+    square: Square | null,
+    squareType: ChessSquare | null,
+  ) => {
     if (!from && square) {
       setFrom(square);
+      if (squareType) {
+        typeOfPiece(squareType.type);
+      }
     } else if (from && square) {
       setTo(square);
     }
   };
 
-  useEffect(() => {
-    if (to) {
-      const move = to;
+  const typeOfPiece = (square: PieceSymbol | null) => {
+    if (square) {
+      const pieceType = square === "p" ? "" : square;
+      setType(pieceType);
+    }
+  };
 
+  useEffect(() => {
+    if (to && from) {
+      const move = type?.toUpperCase() + to;
+      console.log(move);
       socket(move);
       setFrom(null);
       setTo(null);
     }
-  }, [from, to, socket]);
+  }, [from, to, socket, type]);
 
   const flip = color === "b";
 
@@ -55,7 +82,7 @@ const Chessboard: React.FC<ChessboardProps> = ({ board, socket, color }) => {
                     (i + j) % 2 === 0 ? "bg-primary-light" : "bg-chess-dark"
                   }`}
                   onClick={() => {
-                    handleSquareClick(squareKey);
+                    handleSquareClick(squareKey, square);
                   }}
                 >
                   <div className="w-full h-full flex justify-center items-center">
